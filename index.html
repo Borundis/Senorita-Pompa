@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Señorita Pompa</title>
+    <style>
+      :root {
+        --bg1: #fff7ef;
+        --bg2: #ffe5d3;
+        --card: rgba(255, 255, 255, 0.72);
+        --text: #452919;
+        --muted: #6a3e2d;
+        --primary: #c95d36;
+        --primary-dark: #8d3b23;
+        --accent: #f5b58d;
+        --gold: #f6d167;
+        --shadow: rgba(93, 44, 31, 0.2);
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html, body {
+        margin: 0;
+        min-height: 100%;
+        height: 100%;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        color: var(--text);
+        background: linear-gradient(135deg, var(--bg1), var(--bg2), #ffd4c0);
+      }
+
+      body {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        overflow: hidden;
+      }
+
+      .scene {
+        position: relative;
+        width: min(90vw, 820px);
+        min-height: 700px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .card {
+        position: relative;
+        width: 100%;
+        max-width: 760px;
+        background: var(--card);
+        backdrop-filter: blur(10px);
+        border: 2px solid rgba(122, 64, 45, 0.12);
+        border-radius: 32px;
+        box-shadow: 0 26px 60px var(--shadow);
+        overflow: hidden;
+        z-index: 2;
+      }
+
+      .header {
+        text-align: center;
+        padding: 30px 24px 20px;
+      }
+
+      .tag {
+        display: inline-block;
+        background: linear-gradient(135deg, var(--primary), #ef8e5d);
+        color: white;
+        font-weight: 800;
+        font-size: 0.74rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        padding: 10px 18px;
+        border-radius: 999px;
+        box-shadow: 0 10px 22px rgba(201, 93, 54, 0.28);
+      }
+
+      h1 {
+        margin: 18px 0 10px;
+        font-size: clamp(2.4rem, 6vw, 5rem);
+        line-height: 0.9;
+        letter-spacing: -0.07em;
+        color: var(--primary-dark);
+      }
+
+      .subtitle {
+        margin: 0 auto;
+        max-width: 420px;
+        font-size: 1.1rem;
+        line-height: 1.7;
+        color: var(--muted);
+        font-weight: 600;
+      }
+
+      .content {
+        padding: 12px 24px 32px;
+      }
+
+      .plot-box {
+        position: relative;
+        padding: 28px 22px 24px;
+        margin-bottom: 24px;
+        border: 2px dashed rgba(141, 59, 35, 0.32);
+        background: #fffaf7;
+        border-radius: 22px;
+        text-align: center;
+        box-shadow: inset 0 0 0 3px rgba(201, 93, 54, 0.06);
+        transition: transform 0.4s ease, box-shadow 0.4s ease;
+      }
+
+      .plot-box:hover {
+        transform: translateY(-4px);
+        box-shadow: inset 0 0 0 3px rgba(201, 93, 54, 0.12), 0 18px 26px rgba(83, 40, 28, 0.08);
+      }
+
+      .plot-box .mini {
+        display: block;
+        font-size: 0.72rem;
+        font-weight: 900;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--primary-dark);
+        margin-bottom: 12px;
+      }
+
+      .plot-box strong {
+        display: inline-block;
+        font-size: clamp(2.2rem, 5vw, 3.8rem);
+        line-height: 1;
+        letter-spacing: -0.06em;
+        color: var(--primary-dark);
+      }
+
+      .plot-box p {
+        margin: 14px 0 0;
+        font-size: 1.02rem;
+        line-height: 1.7;
+        color: #5d3529;
+        font-weight: 600;
+      }
+
+      .button-wrap {
+        text-align: center;
+        margin: 8px 0 20px;
+      }
+
+      button {
+        border: none;
+        cursor: pointer;
+        color: white;
+        background: linear-gradient(135deg, var(--primary), #df7d4f);
+        border-radius: 999px;
+        padding: 16px 30px;
+        font-size: 1.02rem;
+        letter-spacing: 0.05em;
+        text-transform: uppercase;
+        font-weight: 800;
+        box-shadow: 0 16px 30px rgba(201, 93, 54, 0.26);
+        transition: transform 0.25s ease, box-shadow 0.25s ease;
+      }
+
+      button:hover {
+        transform: translateY(-3px) scale(1.01);
+        box-shadow: 0 18px 34px rgba(201, 93, 54, 0.35);
+      }
+
+      .coupon {
+        opacity: 0;
+        max-height: 0;
+        overflow: hidden;
+        transform: translateY(20px);
+        transition: opacity 0.5s ease, max-height 0.6s ease, transform 0.5s ease;
+      }
+
+      .coupon.revealed {
+        opacity: 1;
+        max-height: 500px;
+        transform: translateY(0);
+      }
+
+      .coupon-panel {
+        background: linear-gradient(135deg, #7a3621, #b35632, #d48b5d);
+        color: white;
+        border-radius: 28px;
+        padding: 24px 20px 30px;
+        position: relative;
+        text-align: center;
+        box-shadow: 0 20px 46px rgba(122, 54, 33, 0.26);
+      }
+
+      .coupon-panel::before,
+      .coupon-panel::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        background: #fffaf7;
+        transform: translateY(-50%);
+      }
+
+      .coupon-panel::before { left: -14px; }
+      .coupon-panel::after { right: -14px; }
+
+      .coupon-badge {
+        display: inline-block;
+        background: rgba(255,255,255,0.18);
+        border: 1px solid rgba(255,255,255,0.5);
+        border-radius: 999px;
+        font-size: 0.72rem;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        padding: 8px 16px;
+        font-weight: 800;
+      }
+
+      .coupon-panel h2 {
+        margin: 18px 0 8px;
+        font-size: clamp(2.4rem, 5vw, 4rem);
+        line-height: 0.95;
+        letter-spacing: -0.07em;
+      }
+
+      .coupon-panel p {
+        margin: 0;
+        font-size: 1.06rem;
+        font-weight: 600;
+        opacity: 0.96;
+      }
+
+      .meta {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 18px;
+        margin-top: 20px;
+      }
+
+      .meta-box {
+        background: rgba(255,255,255,0.12);
+        border: 1px solid rgba(255,255,255,0.2);
+        border-radius: 18px;
+        padding: 16px 12px;
+      }
+
+      .meta-label {
+        display: block;
+        font-size: 0.68rem;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        font-weight: 800;
+        opacity: 0.9;
+        margin-bottom: 6px;
+      }
+
+      .meta-value {
+        font-size: 1.15rem;
+        font-weight: 800;
+      }
+
+      .footer {
+        margin-top: 26px;
+        text-align: center;
+        font-size: 1.08rem;
+        line-height: 1.7;
+        color: var(--muted);
+        font-weight: 700;
+      }
+
+      .heart {
+        color: #d7475f;
+      }
+
+      .floating {
+        position: absolute;
+        width: 14px;
+        height: 14px;
+        background: rgba(255, 133, 150, 0.75);
+        transform: rotate(45deg);
+        border-radius: 3px;
+        animation: floatUp linear infinite;
+        z-index: 1;
+        opacity: 0.8;
+      }
+
+      @keyframes floatUp {
+        0% {
+          transform: translateY(0) rotate(45deg) scale(0.8);
+          opacity: 0;
+        }
+        15% { opacity: 1; }
+        100% {
+          transform: translateY(-260px) rotate(145deg) scale(1.1);
+          opacity: 0;
+        }
+      }
+
+      @media (max-width: 640px) {
+        body {
+          padding: 16px;
+        }
+
+        .scene {
+          min-height: 620px;
+        }
+
+        .meta {
+          grid-template-columns: 1fr;
+        }
+
+        .content {
+          padding-left: 16px;
+          padding-right: 16px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="scene" id="scene">
+      <div class="card">
+        <div class="header">
+          <div class="tag">Para ti</div>
+          <h1>Señorita<br />Pompa</h1>
+          <p class="subtitle">Te invito a algo mejor que un jueves con bolos…</p>
+        </div>
+
+        <div class="content">
+          <div class="plot-box">
+            <span class="mini">Plot twist</span>
+            <strong>¡Oh oh!</strong>
+            <p>
+              Resulta que los eventos del jueves se cancelaron, así que te dejamos
+              un cupón especial válido para un desayuno gratis el sábado en la mañana.
+            </p>
+          </div>
+
+          <div class="button-wrap">
+            <button id="revealBtn" type="button">Ver cupón</button>
+          </div>
+
+          <div class="coupon" id="coupon">
+            <div class="coupon-panel">
+              <div class="coupon-badge">Cupón válido</div>
+              <h2>Desayuno<br />gratis</h2>
+              <p>Sábado en la mañana • Tu premio especial</p>
+
+              <div class="meta">
+                <div class="meta-box">
+                  <span class="meta-label">Evento</span>
+                  <div class="meta-value">Desayuno</div>
+                </div>
+                <div class="meta-box">
+                  <span class="meta-label">Validez</span>
+                  <div class="meta-value">Sábado</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="footer">
+            Aunque el jueves no se pudo,<br />
+            el sábado va a ser un momento lindo y especial <span class="heart">♥</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      const revealBtn = document.getElementById('revealBtn');
+      const coupon = document.getElementById('coupon');
+
+      revealBtn.addEventListener('click', () => {
+        coupon.classList.toggle('revealed');
+        revealBtn.textContent = coupon.classList.contains('revealed') ? 'Cupón desbloqueado' : 'Ver cupón';
+      });
+
+      function createFloatingHeart() {
+        const heart = document.createElement('div');
+        heart.className = 'floating';
+        heart.style.left = `${Math.random() * 100}%`;
+        heart.style.bottom = `${Math.random() * 10 + 2}%`;
+        heart.style.animationDuration = `${Math.random() * 4 + 4}s`;
+        heart.style.animationDelay = `${Math.random() * 2}s`;
+        heart.style.background = [
+          'rgba(255, 120, 140, 0.75)',
+          'rgba(250, 186, 117, 0.72)',
+          'rgba(255, 211, 110, 0.75)',
+          'rgba(255, 164, 120, 0.78)'
+        ][Math.floor(Math.random() * 4)];
+        document.getElementById('scene').appendChild(heart);
+
+        setTimeout(() => {
+          heart.remove();
+        }, 6000);
+      }
+
+      setInterval(createFloatingHeart, 800);
+    </script>
+  </body>
+</html>
